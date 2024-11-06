@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, Container, Grid, Table, TableBody, Table
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../context/UserContext';
+import axiosInstance from '../config/axios-config';
 
 const Mypage = () => {
     const { userRole } = useContext(AuthContext);
@@ -17,11 +18,14 @@ const Mypage = () => {
                 //     const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/list`);
                 //     setMemberInfoList(res.data.result);
                 // } else {
-                const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/myinfo`, {
-                    headers: {
-                        Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN'),
-                    },
-                });
+
+                // const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/myinfo`, {
+                //     headers: {
+                //         Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN'),
+                //     },
+                // });
+
+                const res = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/user/myinfo`);
 
                 setMemberInfoList([
                     { key: '이름', value: res.data.result.nickname },
