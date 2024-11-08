@@ -3,10 +3,12 @@ import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../context/UserContext';
 import axiosInstance from '../config/axios-config';
+import { useNavigate } from 'react-router-dom';
 
 const Mypage = () => {
-    const { userRole } = useContext(AuthContext);
+    const { userRole, onLogout } = useContext(AuthContext);
     const [memberInfoList, setMemberInfoList] = useState([]);
+    const navigate = useNavigate();
 
     const isAdmin = userRole === 'ADMIN';
 
@@ -36,7 +38,16 @@ const Mypage = () => {
                 ]);
 
                 // }
-            } catch (e) {}
+            } catch (e) {
+                if (e.response.data?.statusMessage === 'EXPIRED_RT') {
+                    alert('시간이 경과되어 재로그인이 필요합니다.');
+                    onLogout();
+                    navigate('/');
+                } else if (e.response.data.message === 'NO_LOGIN') {
+                    alert('아예 로그인 X');
+                    navigate('/');
+                }
+            }
         };
 
         fetchMemberInfo();

@@ -42,15 +42,13 @@ axiosInstance.interceptors.response.use(
     async (error) => {
         console.log('response interceptor 동작: ', error);
 
-        // // 응답 실패 -> 로그인을 안한 사람
-        // if (error.response.data.message === 'INVALID_AUTH') {
-        //     console.log('로그인 안되어있음.');
+        // 응답 실패 -> 로그인을 안한 사람
+        // if (error.response.data.message === 'NO_LOGIN') {
         //     return Promise.reject(error);
         // }
 
-        // 응답 실패 -> 로그인을 안한 사람
+        // 응답 실패 -> 로그인을 안한 사람 (EntryPoint 적용X)
         if (!localStorage.getItem('ACCESS_TOKEN')) {
-            console.log('로그인 안되어있음.');
             return Promise.reject(error);
         }
 
@@ -88,16 +86,13 @@ axiosInstance.interceptors.response.use(
                 // axiosInstance.defaults.headers.Authorization = `Bearer ${token}`;
 
                 // axiosInstance를 사용해서 다시 한번 원본 요청을 보내고, 응답값은 원래 호출한 곳으로 리턴
-
                 return axiosInstance(originalRequest);
             } catch (e) {
-                console.log('refresh도 만료가 됨');
-                localStorage.clear();
+                console.log('refresh 만료');
+                console.log(e);
+                return Promise.reject(e);
             }
         }
-
-        // 재발급 요청도 거절 -> 인스턴스를 호출한 곳으로 에러 정보 리턴
-        return Promise.reject(error);
     },
 );
 
