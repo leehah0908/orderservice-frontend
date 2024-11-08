@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, Container, Grid, Table, TableBody, TableCell, TableRow } from '@mui/material';
-import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../context/UserContext';
 import axiosInstance from '../config/axios-config';
@@ -10,34 +9,33 @@ const Mypage = () => {
     const [memberInfoList, setMemberInfoList] = useState([]);
     const navigate = useNavigate();
 
-    const isAdmin = userRole === 'ADMIN';
-
     useEffect(() => {
         // 회원정보 불러오기
         const fetchMemberInfo = async () => {
             try {
-                // if (!isAdmin) {
-                //     const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/list`);
-                //     setMemberInfoList(res.data.result);
-                // } else {
+                const url =
+                    userRole === 'ADMIN'
+                        ? `${process.env.REACT_APP_API_BASE_URL}/user/list`
+                        : `${process.env.REACT_APP_API_BASE_URL}/user/myinfo`;
 
-                // const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/myinfo`, {
+                // const res = await axios.get(url, {
                 //     headers: {
                 //         Authorization: 'Bearer ' + localStorage.getItem('ACCESS_TOKEN'),
                 //     },
                 // });
 
-                const res = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}/user/myinfo`);
+                const res = await axiosInstance.get(url);
+                const data = userRole === 'ADMIN' ? res.data.result : [res.data.result]; // 일반 회원은 리스트로 오지 않기 때문에 직접 리스트로 만들기
 
-                setMemberInfoList([
-                    { key: '이름', value: res.data.result.nickname },
-                    { key: '이메일', value: res.data.result.email },
-                    { key: '도시', value: res.data.result.address?.city || '등록 전' },
-                    { key: '상세 주소', value: res.data.result.address?.street || '등록 전' },
-                    { key: '우편 번호', value: res.data.result.address?.zipCode || '등록 전' },
-                ]);
-
-                // }
+                setMemberInfoList(
+                    data.map((user) => [
+                        { key: '이름', value: user.nickname },
+                        { key: '이메일', value: user.email },
+                        { key: '도시', value: user.address?.city || '등록 전' },
+                        { key: '상세 주소', value: user.address?.street || '등록 전' },
+                        { key: '우편 번호', value: user.address?.zipCode || '등록 전' },
+                    ]),
+                );
             } catch (e) {
                 if (e.response.data?.statusMessage === 'EXPIRED_RT') {
                     alert('시간이 경과되어 재로그인이 필요합니다.');
@@ -61,14 +59,16 @@ const Mypage = () => {
                         <CardHeader title='회원정보' style={{ textAlign: 'center' }} />
                         <CardContent>
                             <Table>
-                                <TableBody>
-                                    {memberInfoList.map((element, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell>{element.key}</TableCell>
-                                            <TableCell>{element.value}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
+                                {memberInfoList.map((element, index) => (
+                                    <TableBody>
+                                        {element.map((info, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>{info.key}</TableCell>
+                                                <TableCell>{info.value}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                ))}
                             </Table>
                         </CardContent>
                     </Card>
