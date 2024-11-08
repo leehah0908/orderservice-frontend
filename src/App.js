@@ -10,6 +10,7 @@ import OrderPage from './components/OrderPage';
 import Mypage from './components/Mypage';
 import { AuthContextProvider } from './context/UserContext';
 import { CartContextProvider } from './context/CartContext';
+import ProductCreate from './components/ProductCreate';
 
 function App() {
     return (
@@ -25,6 +26,7 @@ function App() {
                             <Route path='/product/list' element={<ProductList />} />
                             <Route path='/order/cart' element={<OrderPage />} />
                             <Route path='/mypage' element={<Mypage />} />
+                            <Route path='/product/manage' element={<ProductCreate />} />
                         </Routes>
                     </div>
                     <Footer />

@@ -50,7 +50,7 @@ const OrderPage = () => {
         } catch (e) {
             console.log(e);
             if (e.response.data?.statusMessage === 'EXPIRED_RT') {
-                alert('시간이 경과되어 재 로그인이 필요합니다.');
+                alert('시간이 경과되어 재로그인이 필요합니다.');
                 onLogout();
                 navigate('/');
             } else if (e.response.data.message === 'NO_LOGIN') {

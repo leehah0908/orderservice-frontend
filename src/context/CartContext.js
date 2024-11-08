@@ -1,4 +1,3 @@
-import { type } from '@testing-library/user-event/dist/type';
 import React, { useReducer } from 'react';
 
 // 리듀서 함수 정의
