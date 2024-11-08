@@ -1,7 +1,8 @@
 {
     "env": {
         "browser": true,
-        "es2021": true
+        "es2021": true,
+        "jest": true
     },
     "extends": ["standard", "plugin:react/recommended", "plugin:prettier/recommended"],
     "parserOptions": {
@@ -12,6 +13,11 @@
         }
     },
     "plugins": ["react", "prettier"],
+    "settings": {
+        "react": {
+            "version": "detect" // React 버전 자동 감지
+        }
+    },
     "rules": {
         "prettier/prettier": ["error", { "singleQuote": true, "semi": true, "endOfLine": "auto" }],
         "space-before-function-paren": "off",

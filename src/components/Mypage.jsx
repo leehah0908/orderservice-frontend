@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import AuthContext from '../context/UserContext';
 import axiosInstance from '../config/axios-config';
 import { useNavigate } from 'react-router-dom';
+import OrderListComponent from './OrderListComponent';
 
 const Mypage = () => {
     const { userRole, onLogout } = useContext(AuthContext);
@@ -76,7 +77,7 @@ const Mypage = () => {
             </Grid>
 
             {/* OrderListComponent */}
-            {/* <OrderListComponent isAdmin={userRole === 'ADMIN'} /> */}
+            <OrderListComponent isAdmin={userRole === 'ADMIN'} />
         </Container>
     );
 };
