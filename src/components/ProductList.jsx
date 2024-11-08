@@ -67,6 +67,12 @@ const ProductList = ({ pageTitle }) => {
             page: currentPage,
         };
 
+        // 사용자가 조건을 선택했고, 검색어를 입력했다면 프로퍼티를 추가
+        if (searchType !== 'optional' && searchValue) {
+            params.searchType = searchType;
+            params.searchKeyword = searchValue;
+        }
+
         setIsLoading(true);
 
         try {
@@ -143,16 +149,24 @@ const ProductList = ({ pageTitle }) => {
         }));
     };
 
+    // 검색 버튼 클릭 이벤트 핸들러
+    const searchBtnHandler = (e) => {
+        e.preventDefault();
+
+        // 모든 상태변수 초기화
+        setProductList([]);
+        setCurrentPage(0);
+        setIsLastpage(false);
+        setIsLoading(false);
+
+        loadProduct();
+    };
+
     return (
         <Container>
             <Grid container justifyContent='space-between' spacing={2} className='mt-5'>
                 <Grid item>
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            loadProduct();
-                        }}
-                    >
+                    <form onSubmit={searchBtnHandler}>
                         <Grid container spacing={2}>
                             <Grid item>
                                 <Select value={searchType} onChange={(e) => setSearchType(e.target.value)} displayEmpty>
