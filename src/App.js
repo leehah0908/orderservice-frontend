@@ -1,16 +1,9 @@
-import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import Footer from './components/Footer';
 import Header from './components/Header';
-import Home from './components/Home';
-import Signup from './components/Signup';
-import Login from './components/Login';
-import ProductList from './components/ProductList';
-import OrderPage from './components/OrderPage';
-import Mypage from './components/Mypage';
 import { AuthContextProvider } from './context/UserContext';
 import { CartContextProvider } from './context/CartContext';
-import ProductCreate from './components/ProductCreate';
+import AppRouter from './router/AppRouter';
 
 function App() {
     return (
@@ -19,15 +12,7 @@ function App() {
                 <div className='App'>
                     <Header />
                     <div className='content-wrapper'>
-                        <Routes>
-                            <Route path='/' element={<Home />} />
-                            <Route path='/member/create' element={<Signup />} />
-                            <Route path='/login' element={<Login />} />
-                            <Route path='/product/list' element={<ProductList />} />
-                            <Route path='/order/cart' element={<OrderPage />} />
-                            <Route path='/mypage' element={<Mypage />} />
-                            <Route path='/product/manage' element={<ProductCreate />} />
-                        </Routes>
+                        <AppRouter />
                     </div>
                     <Footer />
                 </div>

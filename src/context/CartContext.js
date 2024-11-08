@@ -68,8 +68,6 @@ export const CartContextProvider = (props) => {
         dispatch({ type: 'CLEAR_CART' });
     };
 
-    console.log(cartState);
-
     return (
         <CartContext.Provider
             value={{
