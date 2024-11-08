@@ -1,10 +1,13 @@
 import { Button, Card, CardContent, CardHeader, Container, Grid, TextField } from '@mui/material';
-import React, { useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../config/axios-config';
+import AuthContext from '../context/UserContext';
+import { handleAxiosError } from '../config/handleAxiosError';
 
 const ProductCreate = () => {
     const navigate = useNavigate();
+    const { onLogout } = useContext(AuthContext);
 
     const [name, setName] = useState('');
     const [category, setCategory] = useState('');
@@ -37,7 +40,9 @@ const ProductCreate = () => {
 
             alert('상품 등록 완료');
             navigate('/product/list');
-        } catch (e) {}
+        } catch (e) {
+            handleAxiosError(e, onLogout, navigate);
+        }
     };
 
     const fileUpdate = (e) => {

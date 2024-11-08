@@ -16,6 +16,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axiosInstance from '../config/axios-config';
 import AuthContext from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { handleAxiosError } from '../config/handleAxiosError';
 
 const OrderListComponent = ({ isAdmin }) => {
     const [orderList, setOrderList] = useState([]);
@@ -29,7 +30,7 @@ const OrderListComponent = ({ isAdmin }) => {
                 const res = await axiosInstance.get(`${process.env.REACT_APP_API_BASE_URL}${url}`);
                 setOrderList(res.data.result);
             } catch (e) {
-                console.log(e);
+                handleAxiosError(e, onLogout, navigate);
             }
         };
 
@@ -45,14 +46,7 @@ const OrderListComponent = ({ isAdmin }) => {
                 return prevList.map((order) => (order.orderId === orderId ? { ...order, orderStatus: 'CANCELED' } : order));
             });
         } catch (e) {
-            if (e.response.data?.statusMessage === 'EXPIRED_RT') {
-                alert('시간이 경과되어 재로그인이 필요합니다.');
-                onLogout();
-                navigate('/');
-            } else if (e.response.data.message === 'NO_LOGIN') {
-                alert('아예 로그인 X');
-                navigate('/');
-            }
+            handleAxiosError(e, onLogout, navigate);
         }
     };
 
