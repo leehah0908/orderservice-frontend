@@ -1,7 +1,8 @@
 import { AppBar, Button, Container, Grid, Toolbar, Typography } from '@mui/material';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../context/UserContext';
+import { EventSourcePolyfill } from 'event-source-polyfill';
 
 const Header = () => {
     const { isLoggedIn, userRole, onLogout } = useContext(AuthContext);
@@ -12,6 +13,29 @@ const Header = () => {
         alert('로그아웃되었습니다.');
         navigate('/');
     };
+
+    useEffect(() => {
+        if (userRole === 'ADMIN') {
+            // 알림을 받기 위해 서버에 연결 요청 (/subscribe)
+            const sse = new EventSourcePolyfill(`${process.env.REACT_APP_API_BASE_URL}/subscribe`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` },
+            });
+
+            sse.addEventListener('connect', (event) => {
+                console.log(event);
+            });
+
+            // 30초마다 발생하는 알림 (연결 유지하기 위해)
+            sse.addEventListener('heartbeat', (event) => {
+                console.log(event);
+            });
+
+            sse.onerror = (error) => {
+                console.error(error);
+                sse.close();
+            };
+        }
+    }, [userRole]);
 
     return (
         <AppBar position='static'>
