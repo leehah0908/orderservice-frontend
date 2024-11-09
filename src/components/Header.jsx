@@ -1,12 +1,15 @@
 import { AppBar, Button, Container, Grid, Toolbar, Typography } from '@mui/material';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../context/UserContext';
 import { EventSourcePolyfill } from 'event-source-polyfill';
+import { NotificationAdd } from '@mui/icons-material';
 
 const Header = () => {
     const { isLoggedIn, userRole, onLogout } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [liveQuantity, setLiveQuantity] = useState(0); // 실시간 주문 수
+    const [message, setMessage] = useState('');
 
     const handelLogout = () => {
         onLogout();
@@ -26,8 +29,12 @@ const Header = () => {
             });
 
             // 30초마다 발생하는 알림 (연결 유지하기 위해)
-            sse.addEventListener('heartbeat', (event) => {
-                console.log(event);
+            sse.addEventListener('heartbeat', (event) => {});
+
+            sse.addEventListener('ordered', (event) => {
+                const orderData = JSON.parse(event.data);
+                setLiveQuantity((prev) => prev + 1);
+                setMessage(orderData.userEmail + '님이 주문하였습니다.');
             });
 
             sse.onerror = (error) => {
@@ -60,7 +67,8 @@ const Header = () => {
                                         상품관리
                                     </Button>
                                     <Button color='inherit' href='/order/list'>
-                                        {/* 실시간주문 ({liveQuantity}) */}
+                                        실시간주문
+                                        <NotificationAdd /> ({liveQuantity}) {message}
                                     </Button>
                                 </>
                             )}
